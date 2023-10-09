@@ -6,32 +6,35 @@ import java.util.List;
 import util.Person;
 
 /**
-* The class app contains methods relating to storing, accessing and
-* editing contact information 
+* ContactsApp class contains methods relating to storing, accessing and
+* editing contact information. Takes user input, prints menus and saves and 
+* synchs data to file.
+*
 * @author Anni Peura
 *
 */
 public class ContactsApp { 
 
-    private static final String contacts_file_path = "./util/contact_data.txt";
-    private static final int MENU_QUIT_OPTION = 5;
+    private static final String contactsFilePath = "./util/contact_data.txt";
+    private static final int appExitChoice = 5;
     private ArrayList<Person> contactDetails = new ArrayList<Person>();
     Console c = System.console(); 
 
     /**
-    * Main method runs methods to synch up information, present main menu
-    * and take user's initial feed to use the application. if no text file
+    * Main method runs methods to synch up information from file, creates new 
+    * file if none exist. Prints main menu.
     * exists one is created
     *
-    * @param args default parameter for main method, not used
+    * @param args default parameter for main method, not used.
+    * @throws IOException if filePath is not valid.
     */
     public static void main (String[] args) {
 
-        Path filePath = Paths.get(contacts_file_path);
+        Path filePath = Paths.get(contactsFilePath);
         if (!Files.exists(filePath)) {
             try {    
                 Files.createFile(filePath);        
-            }
+            } 
             catch (IOException e) {
                 e.printStackTrace();
             }
@@ -41,13 +44,42 @@ public class ContactsApp {
         app.listSynch();
         app.printMainMenu();
     }
+
     /**
-    * prints out main menu choices user has to use the application
+    * Method used for synchronizing text file data to arraylist, clears
+    * contactDetails before populating. 
+    * 
+    * @throws IOEXception if filePath not valid.
+    */
+    public void listSynch() {
+
+        Path filePath = Paths.get(contactsFilePath
+);
+        if (Files.exists(filePath)) {
+            try {
+                List<String> lines = Files.readAllLines(filePath);
+                contactDetails.clear();
+                for (String line : lines) {
+                    String[] parts = line.split(",,,");
+                    Person person = new Person(parts[0], parts[1], 
+                        parts[2], parts[3], parts[4], parts[5]);
+                    contactDetails.add(person);
+                }
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
+            } 
+        }
+    }
+
+    /**
+    * Prints main menu, runs methods to take and execute user choice. If user
+    * choice is appExitChoice closes app.
     */
     public void printMainMenu() {
 
         System.out.println();
-        System.out.println("< CONTACTS APP >");
+        System.out.println("<  CONTACTS APP  >");
         System.out.println();
         System.out.println("    1 - show contacts");
         System.out.println("    2 - add a new contact");
@@ -57,15 +89,64 @@ public class ContactsApp {
         System.out.println();
 
         int menuChoice = userInputMenu();
-        if (menuChoice != MENU_QUIT_OPTION) {
+        if (menuChoice != appExitChoice) {
             userChoice(menuChoice);
         } else {
             saveToContactBook();
-            System.out.println("Bye!");
+            System.out.println("\n" + "Bye!");
         }
     }
+    
     /**
-    * prints out choices to quit or return to main menu
+    * Receives and validates user's menu input.
+    *
+    * @return int returns userChoice 
+    * @throws NumberFormatException if input not int
+    */
+    public int userInputMenu() {
+
+        int menuChoice = 0;
+        System.out.print("Please input a number to proceed: ");
+
+        try {
+            menuChoice = Integer.parseInt(c.readLine());
+        } 
+        catch (NumberFormatException e) {      
+            System.out.println("\n" + " Error: answer must be a number.");
+        }
+
+        if (menuChoice < 1 || menuChoice > 5) {
+            System.out.println("    Input a number within the given options.");
+        }
+        return menuChoice;
+    }
+
+    /**
+    * Switch-case operating via int, runs method based on validated user int.
+    * Always prints main menu after.
+    *
+    * @param command int received from userInputMenu.
+    */
+    public void userChoice(int command) {
+        switch (command) {
+            case 1:
+                printContactBook();
+                break;
+            case 2:
+                addNewContact();
+                break;
+            case 3:
+                deleteContact(choosingContact());
+                break;
+            case 4:
+                editContact(choosingContact());
+                break;
+        }
+        printMainMenu();
+    }
+
+    /**
+    * Prints all stored contacts. 
     */
     public void printContactBook() {
 
@@ -83,84 +164,37 @@ public class ContactsApp {
     }
 
     /**
-    * receives and validates user's input to use mainMenu/contactBookMenu
-    * choices.
+    * Method used for choosing a contact, user inputs id and method seeks it
+    * from existing data.
     *
-    * @return int returns userChoice 
-    */
-    public int userInputMenu() {
-
-        int menuChoice = 0;
-        System.out.println("    Please input a number to proceed.");
-
-        try {
-            menuChoice = Integer.parseInt(c.readLine());
-        } catch (NumberFormatException e) {      
-            System.out.println("\n" + "Error: Invalid input, 
-            answer must be a number.");
-        }
-
-        if (menuChoice < 0 || menuChoice > 5) {
-            System.out.println("Input a number within the given options.");
-            return userInputMenu();
-        }
-        return menuChoice;
-    }
-    /**
-    * switch-case operating via int, runs method based on received feed
-    *
-    * @param command is int received from userInputMenu (0-5)
-    */
-
-    public void userChoice(int command) {
-        switch (command) {
-            case 1:
-                printContactBook();
-                break;
-            case 2:
-                addNewContact();
-                break;
-            case 3:
-                deleteContact(choosingContact());
-                break;
-            case 4:
-                editContact(choosingContact());
-                break;
-            default:
-                System.out.println("Invalid choice.");
-        }
-        printMainMenu();
-    }
-    /**
-    * method used for choosing a contact, user inputs id and method seeks it
-    * from existing data
-    *
-    * @return returns -5 if contact's not found otherwise returns target's index
+    * @return returns -5 if contact's not found otherwise returns target's index.
     */
     public int choosingContact() {
 
-        System.out.println("Please type your target id.");
+        System.out.print("Please type your target id: ");
         String targetId = c.readLine();
         System.out.println();
         
         for(int i = 0; i<contactDetails.size(); i++) {
             String searchedId = contactDetails.get(i).getId();
             if(searchedId.equals(targetId)) {
-                System.out.print("contact chosen: ");
+                System.out.print("Contact chosen: ");
                 return i;
             } 
         }
         return -5;
     }    
+
     /**
-    * method used for deleting a contact, if no match prints out no target found
+    * Method used for deleting a contact, if no match prints out no target found.
+    * Asks user to confirm deletion with Y/N, informs of choice success.
     *
-    * @param index is int used to identify chosen contact
+    * @param index int used to identify chosen contact.
     */
     public void deleteContact(int index) {
 
         if (index == -5) {
-            System.out.println("no matching target found!"); 
+            System.out.println("No matching target found."); 
         } else {
             System.out.println(contactDetails.get(index).getFirstName() + " " 
                 + contactDetails.get(index).getLastName() + "\n" 
@@ -180,14 +214,18 @@ public class ContactsApp {
             }
         }
     }
+
     /**
-    * method used for editing a contact, if no match prints out no target found
+    * Method used for editing a contact, if no match prints out no target found.
+    * Prints out current details and asks user to choose what to edit through
+    * switch-case.
     *
-    * @param index is int used to identify chosen contact
+    * @param index int used to identify chosen contact.
     */
     public void editContact(int index) {
+
         if (index == -5) {
-            System.out.println("No matching target found!");
+            System.out.println("No matching target found.");
         } else {
             Person personToEdit = contactDetails.get(index);
 
@@ -207,31 +245,31 @@ public class ContactsApp {
                 + personToEdit.getAddress());
             System.out.println("    0 - Return" + "\n");
 
+            System.out.println("Select what you'd like to edit. ");
             int choice = userInputMenu();
-
             switch (choice) {
                 case 1:
-                    System.out.println("Enter first name:");
+                    System.out.print("Enter first name: ");
                     String newFirstName = c.readLine();
                     personToEdit.setFirstName(newFirstName);
                     break;
                 case 2:
-                    System.out.println("Enter last name:");
+                    System.out.print("Enter last name: ");
                     String newLastName = c.readLine();
                     personToEdit.setLastName(newLastName);
                     break;
                 case 3:
-                    System.out.println("Enter phone number:");
+                    System.out.print("Enter phone number: ");
                     String newPhoneNumber = c.readLine();
                     personToEdit.setPhoneNumber(newPhoneNumber);
                     break;
                 case 4:
-                    System.out.println("Enter email address:");
+                    System.out.print("Enter email address: ");
                     String newEmail = c.readLine();
                     personToEdit.setEmail(newEmail);
                     break;
                 case 5:
-                    System.out.println("Enter address:");
+                    System.out.print("Enter address: ");
                     String newAddress = c.readLine();
                     personToEdit.setAddress(newAddress);
                     break;
@@ -240,17 +278,18 @@ public class ContactsApp {
                 default:
                     System.out.println("Invalid choice.");
             } 
-            System.out.println("    Saved!");
             saveToContactBook();
+            System.out.println("\n" + "Saved!");
         }
     } 
+
     /**
-    * method used for adding a new contact with mandatory details (id, first 
+    * Method used for adding a new contact with mandatory details (id, first 
     * name, last name, phone number) and optional details (email and address)
     */
     public void addNewContact() {
 
-        System.out.println("    Add new contact:");
+        System.out.println("\n" + "Adding new contact:");
 
         System.out.println("Id? (mandatory, form of DDMMYYAXXXX)");
         String idNumber = (c.readLine().trim());
@@ -276,14 +315,17 @@ public class ContactsApp {
 
         contactDetails.add(x);
         saveToContactBook();
-        System.out.println("        Contact saved!");
+        System.out.println("\n" + " Contact saved!");
     }
+
     /**
-    * method used for saving array list data to a text file
+    * Method used for saving array list data to a text file.
+    * @throws IOException if filePath not valid.
     */
     public void saveToContactBook() {
 
-        Path filePath = Paths.get(contacts_file_path);
+        Path filePath = Paths.get(contactsFilePath
+);
         List<String> lines = new ArrayList<>();
 
         for (Person person : contactDetails) {
@@ -293,28 +335,6 @@ public class ContactsApp {
             Files.write(filePath, lines, StandardOpenOption.TRUNCATE_EXISTING); 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-    /**
-    * method used for synchronizing text file data to arraylist
-    */
-    public void listSynch() {
-
-        Path filePath = Paths.get(contacts_file_path);
-        if (Files.exists(filePath)) {
-            try {
-                List<String> lines = Files.readAllLines(filePath);
-                contactDetails.clear();
-
-                for (String line : lines) {
-                    String[] parts = line.split(",,,");
-                    Person person = new Person(parts[0], parts[1], 
-                        parts[2], parts[3], parts[4], parts[5]);
-                    contactDetails.add(person);
-                }
-            } catch (IOException e) {
-            e.printStackTrace();
-            } 
         }
     }
 }

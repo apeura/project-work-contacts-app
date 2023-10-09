@@ -3,6 +3,7 @@ package util;
 /**
 * Person class contains set and get methods for Person's contact information 
 * as well as an overridden toString method and Person constructor.
+*
 * @author Anni Peura
 *
 */
