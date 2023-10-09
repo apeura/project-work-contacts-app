@@ -1,7 +1,10 @@
 # Contacts App project
-ContactsApp stores contact details in a text file. User may view, edit, delete and add contacts via command prompt.
+This project contains a Contacts App that stores contact details in a text file. User may view, edit, delete and add contacts via command line. 
 
-This project is a part of TAMK's Introductory Java programming module (2022)
+User input is fully validated and possible errors are managed. The contact details have required fields (id, name, phone number) and optional fields (email, address), 
+if mandatory data has not been provided in validated form the app is crashed with relevant error message. The project mandated all contact details to have an id in the form of a Finnish National identification number.
+
+This project is a part of TAMK's Introductory Java programming module (2022).
 
 # Author
 Anni Peura :shipit:
@@ -29,4 +32,4 @@ cd src/ && javac *.java && javac util/*.java && java ContactsApp
 ```
 
 ### Author's note
-This code is an updated version of 2022 code, legacy code can be code can be viewed here.
+This code is an updated and bugfixed version of 2022 code.
