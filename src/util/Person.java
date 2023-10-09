@@ -9,12 +9,35 @@ package util;
 */
 public class Person { 
     
-    protected String id; 
-    protected String firstName; 
-    protected String lastName; 
-    protected String phoneNumber; 
-    protected String emailAddress; 
-    protected String address;
+/**
+ * The unique identifier for a person.
+ */
+protected String id;
+
+/**
+ * The first name of a person.
+ */
+protected String firstName;
+
+/**
+ * The last name of a person.
+ */
+protected String lastName;
+
+/**
+ * The phone number of a person.
+ */
+protected String phoneNumber;
+
+/**
+ * The email address of a person.
+ */
+protected String emailAddress;
+
+/**
+ * The address of a person.
+ */
+protected String address;
 
     /**
     * Runs set validations for all user submitted Person values

@@ -26,7 +26,6 @@ public class ContactsApp {
     * exists one is created
     *
     * @param args default parameter for main method, not used.
-    * @throws IOException if filePath is not valid.
     */
     public static void main (String[] args) {
 
@@ -49,7 +48,6 @@ public class ContactsApp {
     * Method used for synchronizing text file data to arraylist, clears
     * contactDetails before populating. 
     * 
-    * @throws IOEXception if filePath not valid.
     */
     public void listSynch() {
 
@@ -101,7 +99,6 @@ public class ContactsApp {
     * Receives and validates user's menu input.
     *
     * @return int returns userChoice 
-    * @throws NumberFormatException if input not int
     */
     public int userInputMenu() {
 
@@ -320,7 +317,6 @@ public class ContactsApp {
 
     /**
     * Method used for saving array list data to a text file.
-    * @throws IOException if filePath not valid.
     */
     public void saveToContactBook() {
 
