@@ -2,7 +2,7 @@
 This project contains a Contacts App that stores contact details in a text file. User may view, edit, delete and add contacts via command line. 
 
 User input is fully validated and possible errors are managed. The contact details have required fields (id, name, phone number) and optional fields (email, address), 
-if mandatory data has not been provided in validated form the app is crashed with relevant error message. The project mandated all contact details to have an id in the form of a Finnish National identification number.
+if mandatory data has not been provided in validated form the app is crashed with relevant error message. The project mandated all contact details to have their id in the form of a Finnish National identification number.
 
 This project is a part of TAMK's Introductory Java programming module (2022).
 
